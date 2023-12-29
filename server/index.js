@@ -7,10 +7,16 @@ const bcrypt = require('bcrypt');
 var cookieParser = require('cookie-parser');
 const {MongoClient,  ObjectId}  = require('mongodb');
 const e = require('express');
-const users=require('./models/user');
+const User=require('./models/user');
+const UserController=require('./controllers/userController');
+const PostController=require('./controllers/postController.js');
+const multer  = require('multer');
+const fs = require('fs');
+const Post = require('./models/post.js');
 
 
 
+const upload = multer({ dest: 'uploads/' })
 
 
 
@@ -23,6 +29,19 @@ app.use(cors({
   origin: 'http://localhost:5173', 
   credentials: true,
 }));
+app.use(function(req, res, next){
+  jwt.verify(req?.cookies?.auth, 'instmsg098', function(err, decoded) {
+    if(!err){
+      req.isAuthorized=true;
+      req.userID=decoded.id;
+      next();
+    } 
+    else{
+      req.isAuthorized=false;
+      next();
+    }
+  });
+});
 
 const url = 'mongodb://localhost:27017';
 const client = new MongoClient(url);
@@ -36,64 +55,111 @@ client.connect().then((result) => {
   console.log(`can't connect to ${url}`);
 });
 
-app.get('/', function (req, res) {
-  jwt.verify(req.cookies.auth, 'instmsg098', function(err, decoded) {
-    if(!err){
-      let idob=new ObjectId(decoded.id);
-      db.collection('users').find({ _id:idob}).toArray().then((data)=>{
-        res.json({status:1, name:`${data[0]["firstName"]} ${data[0]["lastName"]}`})
-      }).catch((err)=>{
-        res.json({status:-1});
-      });
-    } 
-    else{
-      res.json({status:-1});
+app.get('/', async function (req, res) {
+  let userctr=new UserController(db);
+  if(req.isAuthorized){
+    let user=await userctr.findUserById(req.userID);
+    if(userctr.logs.pop().success){
+      delete user?._id;
+      delete user?.password;
+      delete user?.logs;
+      res.json(user)
     }
-  });
+    else{
+      res.json(userctr.logs.pop());
+    }
+  }
+  else{
+    res.json({success:false, status:"user not authorized"});
+  }
 });
 
 
-app.post('/signup', function(req, res){
-  // console.log(req.body.email);
-  bcrypt.hash(req.body.password, 10, function(err, hash) {
-    
-
-    let userData=new users();
-    req.body.password=hash;
-    userData.add(req.body);
-    userData.updateDataBase(db, (success, item)=>{
-      if(success){
-        res.json({status:1});
-      }
-      else{
-        res.json({status:0});
-      }
-    });
-
-  });
+app.post('/signup', async function(req, res){
+  let user=new User(req.body);
+  let userController=new UserController(db);
+  if(user.logs.peek().success){
+    await user.hashPassword();
+    await userController.addUser(user);
+    res.json(userController.logs.pop());
+  }
+  else{
+    res.json(user.logs.pop());
+  }
 });
 
-app.post('/login', function(req, res){
+app.post('/login', async function(req, res){
   
-  // let ob=new ObjectId(req.body.email);
-  db.collection('users').find({ email:req.body.email }).toArray().then((data)=>{
+  let userController=new UserController(db);
+  let user= await userController.findUserByEmail(req.body?.email);
+  if(user!=undefined){
+    await user.comparePassword(req.body?.password);
+    if(user.logs.peek().success){
+      let token = jwt.sign({ id:user._id}, 'instmsg098');
+      res.cookie("auth", token);
+      res.json(user.logs.pop());
+    }
+    else{
+      res.json(user.logs.pop());
+    }
+  }
+  else{
+    res.json({success:false, status:"user not found"});
+  }
 
-    bcrypt.compare(req.body.password, data[0]["password"], function(err, result) {
+  
+});
 
-      if(result==true){
-        let token = jwt.sign({ id: data[0]["_id"].toString() }, 'instmsg098');
-        res.cookie("auth", token);
-        res.json({status:1});
+
+app.post('/post-add',upload.array('images', 12), async function(req, res){
+  if(req.isAuthorized){
+    console.log(req.files);
+    let data=undefined;
+    try{
+      data=JSON.parse(req.body?.jsonData);
+    }catch(e){
+      res.json({success:false, status:"data format error"});
+    }
+    data.images=new Array();
+    data.postedBy=req.userID;
+  
+    for(const file of req.files){
+      if(file.mimetype.startsWith("image")){
+        let temFilePath=file.destination+file.filename+"."+file.originalname.split(".")[file.originalname.split(".").length-1];
+        let temFileName=file.filename+"."+file.originalname.split(".")[file.originalname.split(".").length-1];
+        fs.renameSync(file.path, temFilePath);
+        data.images.push(temFileName);
       }
       else{
-        res.json({status:-2});
+        fs.rm(file.path, (err)=>{});
       }
-    }); 
-  }).catch((err)=>{
-    res.json({status:-1});
-  });
-
   
+    }
+  
+
+    let post=new Post(data);
+    let postController=new PostController(db);
+  
+    await postController.addPost(post);
+    if(postController.logs.peek().success){
+      res.json(postController.logs.pop());
+    }
+    else{
+      res.json(postController.logs.pop());
+    }
+  }
+  else{
+    res.json({success:false, status:"not authorized"});
+  }
+
+});
+
+
+app.get('/images/:filename',upload.array('images', 12), function(req, res){
+
+    fs.readFile("uploads/"+req.params.filename, function(err, data) {
+      res.send(data);
+  });
 });
 
 // app.listen(80,  function(){

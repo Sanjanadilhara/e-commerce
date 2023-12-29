@@ -14,6 +14,10 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Card from 'react-bootstrap/Card';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Modal from 'react-bootstrap/Modal';
+import Image from 'react-bootstrap/Image';
+
+
+
 
 function PostAdd() {
 
@@ -63,6 +67,16 @@ function PostAdd() {
         </Form.Group>
 
       </Row>
+      <Container className='d-flex flex-wrap'>
+      <Image src="./src/components/avt.png" width={100} height={100} className='m-2' rounded />
+      <Image src="./src/components/avt.png" width={100} height={100} className='m-2' rounded />
+      <Image src="./src/components/avt.png" width={100} height={100} className='m-2' rounded />
+      <Image src="./src/components/avt.png" width={100} height={100} className='m-2' rounded />
+      <Image src="./src/components/avt.png" width={100} height={100} className='m-2' rounded />
+      <Image src="./src/components/avt.png" width={100} height={100} className='m-2' rounded />
+      <Image src="./src/components/avt.png" width={100} height={100} className='m-2' rounded />
+   
+      </Container>
       <Row>
       <Form.Group className="position-relative mb-3">
             <Form.Label>Image</Form.Label>

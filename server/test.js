@@ -1,29 +1,37 @@
-const {MongoClient,  ObjectId}  = require('mongodb');
 
-const url = 'mongodb://localhost:27017';
-const client = new MongoClient(url);
-let db=undefined;
+async function ss(p){
+  return new Promise((resoleve, regect)=>{
+    setTimeout(()=>{
+      if(p){
+        resoleve();
+      }
+      else{
+        regect()
+      }
 
-
-
-client.connect().then((result) => {
-  db=client.db('instmsg');
-  console.log(`succesfully connected to db ${url} `);
-  db.collection("messages").aggregate([
-    {
-      $group: {
-        _id: '$from',
-        totalAmount: { $sum: '$sent' },
-      },
-    },
-    {
-      $sort: { totalAmount: -1 },
-    },
-  ]).toArray().then((arr)=>{
-    console.log(arr);
+    }, 1000)
   });
+}
 
-  
-}).catch((err) => {
-  console.log(`can't connect to ${url}`);
-});
+
+async function wi(){
+  try{
+
+    await ss(false);
+    return "yes";
+  }
+  catch(e){
+    console.log("ss fails");
+    console.log("ss executed");
+    return "no ";
+  }
+}
+
+async function upper(){
+  let vv=await wi();
+  console.log("wi executed: ret"+ vv);
+  return true;
+}
+
+
+console.log(upper());

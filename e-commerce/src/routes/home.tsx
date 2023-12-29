@@ -50,28 +50,12 @@ function Home() {
     <Navigation></Navigation>
 
 
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Woohoo, you are reading this text in a modal!</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-
 
     <Container className='mt-5'>
-    <Stack direction="horizontal" gap={3} className='justify-content-center'>
-      <Form.Control className="w-50" placeholder="type what you looking for..." />
-      <Button variant="secondary">Search</Button>
-    </Stack>
+    <Container className='d-flex justify-content-center' >
+      <Form.Control  placeholder="type what you looking for..." style={{width:600}}/>
+      <Button variant="secondary" className='ms-3'>Search</Button>
+    </Container>
     </Container>
     <Container className='mt-5'>
       <div className='lead'>Categories</div>
