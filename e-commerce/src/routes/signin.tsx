@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import reactLogo from '../assets/react.svg'
 import viteLogo from '/vite.svg'
-import Navigation from '../components/navigation';
+import Navigation from '../components/navigation.tsx';
 import { ButtonGroup } from 'react-bootstrap';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Container from 'react-bootstrap/Container';
@@ -19,7 +19,7 @@ function Signin() {
 
     const [validated, setValidated] = useState(false);
 
-    const handleSubmit = (event:any) => {
+    const handleSubmit = (event) => {
       const form = event.currentTarget;
       if (form.checkValidity() === false) {
         event.preventDefault();

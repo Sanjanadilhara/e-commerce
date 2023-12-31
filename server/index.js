@@ -112,36 +112,33 @@ app.post('/login', async function(req, res){
 
 
 app.post('/post-add',upload.array('images', 12), async function(req, res){
+  try{
   if(req.isAuthorized){
     console.log(req.files);
     let data=undefined;
-    try{
-      data=JSON.parse(req.body?.jsonData);
-    }catch(e){
-      res.json({success:false, status:"data format error"});
-    }
-    data.images=new Array();
-    data.postedBy=req.userID;
-  
-    for(const file of req.files){
-      if(file.mimetype.startsWith("image")){
-        let temFilePath=file.destination+file.filename+"."+file.originalname.split(".")[file.originalname.split(".").length-1];
-        let temFileName=file.filename+"."+file.originalname.split(".")[file.originalname.split(".").length-1];
-        fs.renameSync(file.path, temFilePath);
-        data.images.push(temFileName);
+      data=await JSON.parse(req.body?.jsonData);
+      data.images=new Array();
+      data.postedBy=req.userID;
+      
+      for(const file of req.files){
+        if(file.mimetype.startsWith("image")){
+          let temFilePath=file.destination+file.filename+"."+file.originalname.split(".")[file.originalname.split(".").length-1];
+          let temFileName=file.filename+"."+file.originalname.split(".")[file.originalname.split(".").length-1];
+          fs.renameSync(file.path, temFilePath);
+          data.images.push(temFileName);
+        }
+        else{
+          fs.rm(file.path, (err)=>{});
+        }
+        
       }
-      else{
-        fs.rm(file.path, (err)=>{});
-      }
-  
-    }
-  
-
-    let post=new Post(data);
-    let postController=new PostController(db);
-  
-    await postController.addPost(post);
-    if(postController.logs.peek().success){
+      
+      
+      let post=new Post(data);
+      let postController=new PostController(db);
+      
+      await postController.addPost(post);
+      if(postController.logs.peek().success){
       res.json(postController.logs.pop());
     }
     else{
@@ -151,7 +148,10 @@ app.post('/post-add',upload.array('images', 12), async function(req, res){
   else{
     res.json({success:false, status:"not authorized"});
   }
-
+  
+}catch(e){
+  res.json({success:false, status:"unknown error"});
+}
 });
 
 
