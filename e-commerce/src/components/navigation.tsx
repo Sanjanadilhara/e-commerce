@@ -2,13 +2,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
+// import NavDropdown from 'react-bootstrap/NavDropdown';
 import Image from 'react-bootstrap/Image';
 import { Button } from 'react-bootstrap';
 import { useEffect, useState } from 'react'
+import ComData from './common.tsx';
 
-function Navigation(props:any){
-  const [user, setUser] = useState({name:undefined});
+function Navigation(){
+  const [user, setUser] = useState({firstName:undefined, lastName:undefined});
 
 
   useEffect(()=>{
@@ -17,7 +18,7 @@ function Navigation(props:any){
   
 
   function onStart(){
-    fetch("http://localhost:80/", {
+    fetch(ComData.ADDR+"/", {
       method: "GET",
       // mode: "cors", // no-cors, *cors, same-origin
       // credentials: "same-origin",
@@ -30,9 +31,10 @@ function Navigation(props:any){
     .then((data)=>{
       console.log(data);
       setUser(data);   
-    }).catch((err)=>{
+    })
+    // .catch((err)=>{
 
-    });
+    // });
   }
 
 
@@ -64,7 +66,7 @@ function Navigation(props:any){
             <Nav>
               <div className='d-flex justify-content-center mt-md-0 mt-3 align-items-center'>
             <Image src="./src/components/avt.png" roundedCircle style={{height:30, width:30}} className='' />
-              {(user?.name===undefined)?<Nav.Link href="./login">Login</Nav.Link>:<Nav.Link>{user.name}</Nav.Link>}
+              {(user?.firstName===undefined)?<Nav.Link href="./login">Login</Nav.Link>:<Nav.Link>{user.firstName+" "+user.lastName}</Nav.Link>}
               </div>
             </Nav>
           </Navbar.Collapse>

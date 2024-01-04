@@ -26,9 +26,13 @@ const server = http.createServer(app);
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: 'http://localhost:5173', 
+  origin: 'http://192.168.189.21:5173', 
   credentials: true,
 }));
+// app.use(cors({
+//   origin: 'http://localhost:5173', 
+//   credentials: true,
+// }));
 app.use(function(req, res, next){
   jwt.verify(req?.cookies?.auth, 'instmsg098', function(err, decoded) {
     if(!err){
@@ -110,7 +114,19 @@ app.post('/login', async function(req, res){
   
 });
 
-
+app.get('/post/:postId', async function(req, res){
+  let postController=new PostController(db);
+  let post=await postController.findPostById(req.params.postId);
+  if(post===undefined){
+    res.json({success:false, status:"post not found"});
+  }
+  else{
+    delete post?._id;
+    delete post?.logs;
+    res.json(post);
+  }
+  
+});
 app.post('/post-add',upload.array('images', 12), async function(req, res){
   try{
   if(req.isAuthorized){
@@ -157,15 +173,15 @@ app.post('/post-add',upload.array('images', 12), async function(req, res){
 
 app.get('/images/:filename',upload.array('images', 12), function(req, res){
 
-    fs.readFile("uploads/"+req.params.filename, function(err, data) {
-      res.send(data);
-  });
+  res.sendFile("C:/Users/sanja/OneDrive/Desktop/pros/ecommerce/server/uploads/"+req.params.filename);
+  //   fs.readFile("uploads/"+req.params.filename, function(err, data) {
+  //     res.send(data);
+  // });
 });
 
 // app.listen(80,  function(){
 //     console.log("listening on 80");
 // });
-
 
 
 

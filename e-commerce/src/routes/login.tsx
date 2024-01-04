@@ -1,20 +1,22 @@
 
 import { useEffect, useState } from 'react'
-import reactLogo from '../assets/react.svg'
-import viteLogo from '/vite.svg'
+// import reactLogo from '../assets/react.svg'
+// import viteLogo from '/vite.svg'
 import Navigation from '../components/navigation.tsx';
-import { ButtonGroup } from 'react-bootstrap';
-import ListGroup from 'react-bootstrap/ListGroup';
+// import { ButtonGroup } from 'react-bootstrap';
+// import ListGroup from 'react-bootstrap/ListGroup';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Stack from 'react-bootstrap/Stack';
+// import Row from 'react-bootstrap/Row';
+// import Col from 'react-bootstrap/Col';
+// import Stack from 'react-bootstrap/Stack';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Card from 'react-bootstrap/Card';
+import toast, { Toaster } from 'react-hot-toast';
+import ComData from '../components/common.tsx';
 
-import Modal from 'react-bootstrap/Modal';
+// import Modal from 'react-bootstrap/Modal';
 
 function Login() {
     const [userData, setUserData]=useState({email:"", password:""});
@@ -25,7 +27,7 @@ function Login() {
     }, [userData]);
 
     function onLoginClicked(){
-        fetch("http://localhost:80/login", {
+        let request=fetch(ComData.ADDR+"/login", {
           method: "POST",
           // mode: "cors", // no-cors, *cors, same-origin
           // credentials: "same-origin",
@@ -35,32 +37,35 @@ function Login() {
           },
           body: JSON.stringify(userData), 
         })
-        .then((data)=>data.json())
-        .then((data)=>{
-          if(data.status==-1){
-            alert("no user exist");
-          }
-          else if(data.status==-2){
-            alert("wrong password");
-          }
-          else{
-            window.location.href="http://localhost:5173/"
-          }
-        }).catch((err)=>{
-    
+        .then((data)=>data.json());
+
+        toast.promise(request, {
+          loading: 'Loading',
+          success: (data)=>{
+            if(!data.success){
+              throw data.status;
+            }
+            window.location.href = "/";
+            return data.status;
+          },
+          error: (err)=>err.toString(),
         });
       }
 
-  const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+
+  // const [show, setShow] = useState(false);
+
+  // const handleClose = () => setShow(false);
+  // const handleShow = () => setShow(true);
 
   return (
     <>
-    <Navigation showLogin={handleShow}></Navigation>
+    <Navigation /*showLogin={handleShow}*/></Navigation>
 
     <Container className='d-flex justify-content-center'>
+
+    <Toaster />
     <Card className='m-md-5 text-center' style={{width:500}}>
       <Card.Header as="h5">Login</Card.Header>
       <Card.Body className=''>

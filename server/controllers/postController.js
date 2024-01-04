@@ -28,7 +28,8 @@ class PostController{
                 delete post?.logs;
                 let res=await this.postsDB.insertOne(post);
                 if(res.acknowledged){
-                    this.logs.push(PostController.POST_ADDED_SUCCESS);
+                    this.logs.push({...PostController.POST_ADDED_SUCCESS, id:res.insertedId});
+                    
                 }
                 else{
                     this.logs.push(PostController.POST_ADDED_UNSUCCESS);
@@ -63,16 +64,22 @@ class PostController{
 
 
     async findPostById(id){
-        let retPost=new Post();
-        let res= await this.retrievePost({_id:new ObjectId(id)});
-        if(res[0]!=undefined){
-            for(const [key, value] of Object.entries(res[0])){
-                retPost[key]=value;
+        try{
+            let retPost=new Post();
+            let res= await this.retrievePost({_id:new ObjectId(id)});
+            if(res[0]!=undefined){
+                for(const [key, value] of Object.entries(res[0])){
+                    retPost[key]=value;
+                }
+                return retPost;
             }
-            return retPost;
+            else{
+                return undefined
+            }
+
         }
-        else{
-            return undefined
+        catch(e){
+            return undefined;
         }
 
     }

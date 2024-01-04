@@ -1,24 +1,24 @@
-import { useEffect, useState } from 'react'
-import reactLogo from '../assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect /* , useState*/ } from 'react'
+// import reactLogo from '../assets/react.svg'
+// import viteLogo from '/vite.svg'
 import Navigation from '../components/navigation.tsx';
-import { ButtonGroup } from 'react-bootstrap';
+// import { ButtonGroup } from 'react-bootstrap';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Stack from 'react-bootstrap/Stack';
-import Modal from 'react-bootstrap/Modal';
+// import Stack from 'react-bootstrap/Stack';
+// import Modal from 'react-bootstrap/Modal';
 
 function Home() {
-  const [user, setUser] = useState({name:undefined});
+  // const [user, setUser] = useState({name:undefined});
 
-  const [show, setShow] = useState(false);
+  // const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // const handleClose = () => setShow(false);
+  // const handleShow = () => setShow(true);
 
   useEffect(()=>{
     onStart();
@@ -38,10 +38,11 @@ function Home() {
     .then((data)=>data.json())
     .then((data)=>{
       console.log(data);
-      setUser(data);   
-    }).catch((err)=>{
+      // setUser(data);   
+    })
+    // .catch((err)=>{
 
-    });
+    // });
   }
 
 

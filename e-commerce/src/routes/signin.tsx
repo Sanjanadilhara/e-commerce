@@ -1,25 +1,25 @@
 import { useState } from 'react'
-import reactLogo from '../assets/react.svg'
-import viteLogo from '/vite.svg'
+// import reactLogo from '../assets/react.svg'
+// import viteLogo from '/vite.svg'
 import Navigation from '../components/navigation.tsx';
-import { ButtonGroup } from 'react-bootstrap';
-import ListGroup from 'react-bootstrap/ListGroup';
+// import { ButtonGroup } from 'react-bootstrap';
+// import ListGroup from 'react-bootstrap/ListGroup';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Stack from 'react-bootstrap/Stack';
-import FloatingLabel from 'react-bootstrap/FloatingLabel';
+// import Stack from 'react-bootstrap/Stack';
+// import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Card from 'react-bootstrap/Card';
 import InputGroup from 'react-bootstrap/InputGroup';
-import Modal from 'react-bootstrap/Modal';
+// import Modal from 'react-bootstrap/Modal';
 
 function Signin() {
 
     const [validated, setValidated] = useState(false);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = (event:any) => {
       const form = event.currentTarget;
       if (form.checkValidity() === false) {
         event.preventDefault();

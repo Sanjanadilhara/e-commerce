@@ -1,21 +1,24 @@
 import { useEffect, useState } from 'react'
-import reactLogo from '../assets/react.svg'
-import viteLogo from '/vite.svg'
+// import reactLogo from '../assets/react.svg'
+// import viteLogo from '/vite.svg'
 import Navigation from '../components/navigation.tsx';
-import { ButtonGroup, useAccordionButton } from 'react-bootstrap';
-import ListGroup from 'react-bootstrap/ListGroup';
+// import { ButtonGroup, useAccordionButton } from 'react-bootstrap';
+// import ListGroup from 'react-bootstrap/ListGroup';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Stack from 'react-bootstrap/Stack';
+// import Stack from 'react-bootstrap/Stack';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Card from 'react-bootstrap/Card';
 import InputGroup from 'react-bootstrap/InputGroup';
-import Modal from 'react-bootstrap/Modal';
+// import Modal from 'react-bootstrap/Modal';
 import Image from 'react-bootstrap/Image';
-
+import Toast from 'react-bootstrap/Toast';
+import ToastContainer from 'react-bootstrap/ToastContainer';
+import toast, { Toaster } from 'react-hot-toast';
+import ComData from '../components/common.tsx';
 
 
 
@@ -23,8 +26,10 @@ function PostAdd() {
 
     const [validated, setValidated] = useState(false);
     const [postData, setPostdata]=useState({});
-    const [temImg, setTemImg]=useState({});
-    const [imageArray, setImageArray]=useState([]);
+    const [temImg, setTemImg]:[any, any]=useState({});
+    const [imageArray, setImageArray]:[any, any]=useState([]);
+    const [postAddSuccess, setPostAddSuccess]=useState(false);
+
 
     useEffect(()=>{
       let temArr=[];
@@ -36,44 +41,51 @@ function PostAdd() {
     }, [temImg]);
 
 
-
-    useEffect(()=>{
-      console.log(postData);
-    }, [postData]);
-
     const handleSubmit = (event:any) => {
       const form = event.currentTarget;
       event.preventDefault();
       event.stopPropagation();
       setValidated(true);
-      if (form.checkValidity() === false) {
+      if(!postAddSuccess){
+        
+        if (form.checkValidity() === false) {
+        }
+        else{
+          let formData=new FormData();
+          formData.append("jsonData", JSON.stringify(postData));
+    
+          imageArray.forEach((item:any)=>{
+            formData.append("images", item);
+          });
+          // formData.append("images", imageArray[0]);
+          // formData.append("images", imageArray[1]);
+    
+          console.log(formData);
+    
+          let request=fetch(ComData.ADDR+"/post-add", {
+            method: "POST",
+            credentials: 'include',
+            body: formData ,
+          
+          }).then((data)=>data.json());
+  
+          toast.promise(request, {
+            loading: 'Loading',
+            success: (data)=>{
+              if(!data.success){
+                throw data.status;
+              }
+              setPostAddSuccess(true);
+              setTimeout(()=>{window.location.href = "/post/"+data.id}, 300);
+              return data.status;
+            },
+            error: (err)=>err.toString(),
+          });
+          
+        }
       }
       else{
-        let formData=new FormData();
-        formData.append("jsonData", JSON.stringify(postData));
-  
-        imageArray.forEach((item)=>{
-          formData.append("images", item);
-        });
-        // formData.append("images", imageArray[0]);
-        // formData.append("images", imageArray[1]);
-  
-        console.log(formData);
-  
-        fetch("http://localhost:80/post-add", {
-          method: "POST",
-          credentials: 'include',
-          body: formData ,
-        
-        }) 
-        .then((data)=>data.json())
-        .then((res)=>{
-          console.log(res);
-        })
-        .catch((err)=>{
-          console.log(err);
-        });
-        
+        toast("post already added");
       }
 
 
@@ -85,6 +97,10 @@ function PostAdd() {
     <Navigation></Navigation>
 
     <Container className='d-flex justify-content-center'>
+
+    <Toaster />
+
+
     <Card className='m-md-5 text-center' style={{width:600}}>
       <Card.Header as="h5">Create an Advertisement</Card.Header>
       <Card.Body className=''>
@@ -118,7 +134,7 @@ function PostAdd() {
 
       </Row>
       <Container className='d-flex flex-wrap'>
-      {imageArray.map((val, index)=>(
+      {imageArray.map((val:any)=>(
         <Image src={URL.createObjectURL(val)}  width={100} height={100} className='m-2' rounded style={{objectFit:'cover'}} />
       ))}
  
@@ -133,7 +149,7 @@ function PostAdd() {
               multiple
               accept='.jpg, .jpeg, .png'
               name="file"
-              onChange={(e)=>{setTemImg(e.target.files)}}
+              onChange={(e:any)=>{setTemImg(e.target.files)}}
             />
             <Form.Control.Feedback type="invalid" >
                 choose a file

@@ -5,6 +5,7 @@ import Home from './routes/home.tsx'
 import Login from './routes/login.tsx'
 import Signin from './routes/signin.tsx'
 import PostAdd from './routes/postadd.tsx'
+import ViewPost from './routes/viewpost.tsx'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path:"/postadd",
     element:<PostAdd></PostAdd>
+  },
+  {
+    path:"/post/:id",
+    element:<ViewPost></ViewPost>,
   },
 ]);
 

@@ -1,0 +1,31 @@
+stage1:
+{
+  title:1,
+  _id:1,
+  images:1,
+  matches: {$size:
+    {$regexFindAll:{
+    input:'$description',
+    regex:/this|from/,
+    options:'i'
+  	}
+    }
+  }
+  
+}
+
+
+
+
+stage2:
+{
+  description:{$regex:/this|from/i}
+}
+
+
+
+
+stage3:
+{
+  matches: -1
+}
