@@ -52,7 +52,7 @@ function Search(){
                     posts[0]?.title===undefined?
                     "No Results":
                     posts.map((item:SearchPost)=>(
-                        <AdvCard image={ComData.ADDR+"/images/"+item.images[0]}  title={item.title} price={item.price}/>
+                        <AdvCard _id={item._id} image={ComData.ADDR+"/images/"+item.images[0]}  title={item.title} price={item.price}/>
                     ))
         
             }

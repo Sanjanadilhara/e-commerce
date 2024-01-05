@@ -1,7 +1,8 @@
 export interface advCardProps{
     image:string,
     title:string,
-    price:number
+    price:number,
+    _id:string,
 }
 
 export interface SearchPost{
