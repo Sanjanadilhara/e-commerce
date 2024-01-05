@@ -1,5 +1,5 @@
 class ComData{
-    static ADDR="http://192.168.189.21:80";
+    static ADDR="http://localhost:80";
 }
 
 

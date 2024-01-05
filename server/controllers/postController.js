@@ -102,6 +102,60 @@ class PostController{
             this.logs.push(PostController.POST_UPDATE_FAIL)
         }
     }
+    async searchPosts(keys){
+        try{
+            let regString=keys.split(" ").join("|");
+            let regExpObj=new RegExp(regString, 'i');
+            let result=await this.postsDB.aggregate([
+                {
+                  $addFields:
+                  {
+                    searchstr:{$concat:['$title', ' ', '$description']}
+                  }  
+                },
+                {$match:
+                    {
+                        searchstr: {
+                          $regex: regExpObj,
+                        },
+                    }
+                },
+
+                {
+                    $addFields:
+                    {
+                        matches: {
+                          $size: {
+                            $regexFindAll: {
+                              input: "$searchstr",
+                              regex: regString,
+                              options: "i",
+                            },
+                          },
+                        },
+                      }
+                },
+
+                {
+                    $sort:
+                    {
+                        matches: -1,
+                    }
+                }
+            ]).toArray();
+
+
+            if(result.length==0){
+                throw "no result found";
+            }
+            
+            return {success:true, posts:result};
+        }
+        catch(e){
+            return {success:false, status:e.toString()};
+        }
+
+    }
 }
 
 
