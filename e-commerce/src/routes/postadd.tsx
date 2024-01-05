@@ -15,8 +15,6 @@ import Card from 'react-bootstrap/Card';
 import InputGroup from 'react-bootstrap/InputGroup';
 // import Modal from 'react-bootstrap/Modal';
 import Image from 'react-bootstrap/Image';
-import Toast from 'react-bootstrap/Toast';
-import ToastContainer from 'react-bootstrap/ToastContainer';
 import toast, { Toaster } from 'react-hot-toast';
 import ComData from '../components/common.tsx';
 

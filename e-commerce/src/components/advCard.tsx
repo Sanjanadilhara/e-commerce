@@ -1,5 +1,5 @@
 import Image from 'react-bootstrap/Image';
-import ComData from './common';
+// import ComData from './common';
 import '../App.css'
 import {advCardProps} from './interfaces'
 

@@ -3,13 +3,13 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import AdvCard from '../components/advCard.tsx';
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import ComData from '../components/common.tsx';
 import {SearchPost} from '../components/interfaces.tsx'
 
 
 function Search(){
-    const [posts, setPosts]=useState([{}]);
+    const [posts, setPosts]:[any, any]=useState([{}]);
     const [qry, setQry]=useState('');
 
     function search(){
@@ -51,7 +51,7 @@ function Search(){
             {
                     posts[0]?.title===undefined?
                     "No Results":
-                    posts.map((item)=>(
+                    posts.map((item:SearchPost)=>(
                         <AdvCard image={ComData.ADDR+"/images/"+item.images[0]}  title={item.title} price={item.price}/>
                     ))
         

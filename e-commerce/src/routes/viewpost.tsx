@@ -10,7 +10,7 @@ import 'react-medium-image-zoom/dist/styles.css'
 import ComData from '../components/common.tsx';
 
 
-function ViewPost(props:any){
+function ViewPost(){
     const routeParams = useParams();
     const [post, setPost]=useState({
         title: "loading",
