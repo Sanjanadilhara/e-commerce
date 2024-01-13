@@ -7,6 +7,9 @@ import Signin from './routes/signin.tsx'
 import PostAdd from './routes/postadd.tsx'
 import ViewPost from './routes/viewpost.tsx'
 import Search from './routes/search.tsx'
+import Cart from './routes/cart.tsx'
+
+
 import {
   createBrowserRouter,
   RouterProvider,
@@ -41,6 +44,10 @@ const router = createBrowserRouter([
   {
     path:"/post/:id",
     element:<ViewPost></ViewPost>,
+  },
+  {
+    path:"/cart",
+    element:(<Cart></Cart>),
   },
 ]);
 

@@ -13,6 +13,9 @@ const PostController=require('./controllers/postController.js');
 const multer  = require('multer');
 const fs = require('fs');
 const Post = require('./models/post.js');
+const CartItem=require('./models/cartItem.js');
+const CartItemController=require('./controllers/CartItemController.js')
+const stripe = require("stripe")('sk_test_51OJLnxDB5ydFCTRnsen4HUdRgZURdCZcptz3ura6BFk1gDZx6mhBlwBbyH56jyuKxGf1Nuk1z5Y7Ae8pW3z4SO7p00qPbEH6ME');
 
 
 
@@ -183,6 +186,9 @@ app.get('/images/:filename',upload.array('images', 12), function(req, res){
     }
 
   }
+  else{
+    res.end();
+  }
   //   fs.readFile("uploads/"+req.params.filename, function(err, data) {
   //     res.send(data);
   // });
@@ -194,11 +200,61 @@ app.get('/search/:query', async function(req, res){
   res.json(result);
 });
 
+app.post("/cartitem", async function(req, res){
+  try{
+    if(req.isAuthorized){
+      let cartItemController=new CartItemController(db);
+
+      req.body.user=req.userID;
+      let cartItem=new CartItem(req.body);
+      let result=await cartItemController.addCartItem(cartItem);
+      res.json({success:true, status:"cart item added succesfully"});
+    }
+    else{
+      res.json({success:false, status:"not authorized"});
+    }
+  }catch(e){
+    console.log(e);
+    res.send(e);
+  }
+});
+app.get('/cart', async function(req, res){
+  try{
+    if(req.isAuthorized){
+      let cartItemController=new CartItemController(db);
+      let data=await cartItemController.retrieveCartOf(req.userID);
+      res.json(data);
+    }
+    else{
+      res.json({success:false, status:"not authorized"});
+    }
+
+  }catch(e){
+    res.json({success:false, status:e.toString()});
+  }
+});
+
 // app.listen(80,  function(){
 //     console.log("listening on 80");
 // });
 
+app.post("/create-payment-intent", async (req, res) => {
+  const { items } = req.body;
+  console.log(items);
+  // Create a PaymentIntent with the order amount and currency
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: 1200,
+    currency: "usd",
+    // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+    automatic_payment_methods: {
+      enabled: true,
+    },
+  });
 
+  res.send({
+    clientSecret: paymentIntent.client_secret,
+  });
+});
 
 
 server.listen(80)

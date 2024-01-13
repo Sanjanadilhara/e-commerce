@@ -69,7 +69,7 @@ function ViewPost(){
                 <h4>{post.title}</h4>
                 <br/>
                 <h5 className='text-danger'>{"Rs. "+post.price}</h5>
-                <p>{post.description}</p>
+                <p dangerouslySetInnerHTML={{__html:post.description}}></p>
             </Col>
 
         </Row>

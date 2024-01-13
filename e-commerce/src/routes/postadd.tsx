@@ -17,6 +17,8 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Image from 'react-bootstrap/Image';
 import toast, { Toaster } from 'react-hot-toast';
 import ComData from '../components/common.tsx';
+import ReactQuill from "react-quill"
+import 'react-quill/dist/quill.snow.css'
 
 
 
@@ -27,6 +29,10 @@ function PostAdd() {
     const [temImg, setTemImg]:[any, any]=useState({});
     const [imageArray, setImageArray]:[any, any]=useState([]);
     const [postAddSuccess, setPostAddSuccess]=useState(false);
+    const [convertedText, setConvertedText] = useState("Some default content");
+
+
+    useEffect(()=>{console.log(postData)},[postData]);
 
 
     useEffect(()=>{
@@ -119,12 +125,12 @@ function PostAdd() {
         <Form.Label>Category</Form.Label>
         <FloatingLabel controlId="floatingSelect" label="select the category">
       <Form.Select aria-label="Floating label select example"
-      onChange={(e)=>{setPostdata({...postData, category:e.target.value})}}
+      onChange={(e)=>{setPostdata({...postData, category:parseInt(e.target.value)})}}
       >
         <option></option>
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
+        <option value={1}>One</option>
+        <option value={2}>Two</option>
+        <option value={3}>Three</option>
       </Form.Select>
     </FloatingLabel>
           <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
@@ -154,7 +160,7 @@ function PostAdd() {
             </Form.Control.Feedback>
           </Form.Group>
       </Row>
-      <Row>
+      {/* <Row>
         <Form.Group as={Col} md="12" controlId="validationCustomUsername">
         
           <InputGroup hasValidation>
@@ -167,7 +173,20 @@ function PostAdd() {
           </InputGroup>
         </Form.Group>
 
-      </Row>
+      </Row> */}
+      <Row style={{height:'auto'}}>
+      <Form.Group as={Col} md="12" controlId="validationCustomUsername" >
+        
+        <Form.Label>Item Description</Form.Label>
+      <ReactQuill
+        theme='snow'
+        onChange={(e)=>{setPostdata({...postData, description:e})}}
+        className='w-100'
+       style={{height:300}}
+      />
+        <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
+        </Form.Group>
+      </Row >
       {/* <Row className="mb-3">
         <Form.Group as={Col} md="6" controlId="validationCustom03">
           <Form.Label>City</Form.Label>
@@ -187,30 +206,35 @@ function PostAdd() {
           <Form.Label>Zip</Form.Label>
           <Form.Control type="text" placeholder="Zip" required />
           <Form.Control.Feedback type="invalid">
-            Please provide a valid zip.
+          Please provide a valid zip.
           </Form.Control.Feedback>
-        </Form.Group>
-      </Row> */}
+          </Form.Group>
+        </Row> */}
+        <Row className='mt-5 pt-2'>
         <Form.Group as={Col} md="6" controlId="validationCustom01">
-          <Form.Label>Item price</Form.Label>
+          <Form.Label>Item Price</Form.Label>
           <Form.Control
             required
-            type="number"
+            type="text"
             placeholder="Rs."
             onChange={(e)=>{setPostdata({...postData, price:parseFloat(e.target.value)})}}
             defaultValue=""
           />
           <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
         </Form.Group>
+
+        </Row>
       <Form.Group className="mb-3">
         <Form.Check
           required
           label="Agree to terms and conditions"
           feedback="You must agree before submitting."
           feedbackType="invalid"
-        />
+          />
       </Form.Group>
-      <Button type="submit" className='w-100'>Sign in</Button>
+
+
+      <Button type="submit" className='w-100'>Submit</Button>
     </Form>
       </Card.Body>
     </Card>
