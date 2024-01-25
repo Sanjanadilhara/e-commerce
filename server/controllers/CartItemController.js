@@ -40,6 +40,30 @@ class CartItemController{
         }
       
     }
+    async deleteCartItem(id){
+        if(this.cartItemDB===undefined){
+            throw JSON.stringify({success:false, status:"database connection error"});
+        }
+
+        let cartItemId;
+        try{
+            cartItemId=new ObjectId(id);
+        }catch(e){
+            throw JSON.stringify({success:false, status:"invalid item"});
+        }
+      
+
+        let res=await this.cartItemDB.deleteOne({_id:cartItemId});
+        if(res.acknowledged && res.deletedCount==1){
+            return res.insertedId;
+        }
+        else{
+            throw JSON.stringify({success:false, status:"could not delete the item"});
+        }
+        
+      
+      
+    }
 
     async retrieveCartOf(userId){
             let postsArray;
@@ -62,6 +86,17 @@ class CartItemController{
                         {
                             path: '$post'
                         }
+                    },
+                    {$project:
+                        {
+                            _id:1,
+                            postId:'$post._id',
+                            postTitle:'$post.title',
+                            postImage:{$arrayElemAt:['$post.images', 0]},
+                            postPrice:'$post.price',
+                            quantity:1,
+                            price:1
+                          }
                     },
                     {$group:
                         {

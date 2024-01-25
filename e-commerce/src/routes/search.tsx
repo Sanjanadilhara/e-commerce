@@ -3,14 +3,21 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import AdvCard from '../components/advCard.tsx';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ComData from '../components/common.tsx';
 import {SearchPost} from '../components/interfaces.tsx'
-
+import { useParams } from 'react-router-dom';
 
 function Search(){
+    let {query}=useParams();
     const [posts, setPosts]:[any, any]=useState([{}]);
-    const [qry, setQry]=useState('');
+    const [qry, setQry]=useState(query);
+
+    useEffect(()=>{
+        if(query != undefined){
+            search();
+        }
+    }, []);
 
     function search(){
         console.log(ComData.ADDR+"/search/"+qry);

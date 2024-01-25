@@ -126,7 +126,6 @@ app.get('/post/:postId', async function(req, res){
     res.json({success:false, status:"post not found"});
   }
   else{
-    delete post?._id;
     delete post?.logs;
     res.json(post);
   }
@@ -218,6 +217,22 @@ app.post("/cartitem", async function(req, res){
     res.send(e);
   }
 });
+app.delete("/cartitem", async function(req, res){
+  try{
+    if(req.isAuthorized){
+      let cartItemController=new CartItemController(db);
+
+      let result=await cartItemController.deleteCartItem(req.body?.item);
+      res.json({success:true, status:"cart item deleted succesfully"});
+    }
+    else{
+      res.json({success:false, status:"not authorized"});
+    }
+  }catch(e){
+    console.log(e);
+    res.send(e);
+  }
+});
 app.get('/cart', async function(req, res){
   try{
     if(req.isAuthorized){
@@ -241,19 +256,28 @@ app.get('/cart', async function(req, res){
 app.post("/create-payment-intent", async (req, res) => {
   const { items } = req.body;
   console.log(items);
-  // Create a PaymentIntent with the order amount and currency
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: 1200,
-    currency: "usd",
-    // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
-    automatic_payment_methods: {
-      enabled: true,
-    },
-  });
+  if(req.isAuthorized){
+    let cartItemController=new CartItemController(db);
+    let data=await cartItemController.retrieveCartOf(req.userID);
+    // Create a PaymentIntent with the order amount and currency
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: data.total*100,
+      currency: "LKR",
+      // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+  
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+      total:data.total,
+    });
 
-  res.send({
-    clientSecret: paymentIntent.client_secret,
-  });
+  }
+  else{
+    res.json({success:false, status:"not authorized"});
+  }
 });
 
 

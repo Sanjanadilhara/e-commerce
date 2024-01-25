@@ -7,6 +7,7 @@ import Image from 'react-bootstrap/Image';
 import { Button } from 'react-bootstrap';
 import { useEffect, useState } from 'react'
 import ComData from './common.tsx';
+import { BsCart4 } from "react-icons/bs";
 
 function Navigation(){
   const [user, setUser] = useState({firstName:undefined, lastName:undefined});
@@ -40,14 +41,14 @@ function Navigation(){
 
 
     return (
-        <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
+        <Navbar collapseOnSelect expand="lg" className="text-white" style={{backgroundColor:"#006dc8"}}>
         <Container>
-          <Navbar.Brand href="./">e-commerce site</Navbar.Brand>
+          <Navbar.Brand className='text-white' href="/">e-commerce site</Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="#features" className='h-auto text-center'>Latest Adds</Nav.Link>
-              <Button variant="outline-success" href='./postadd'>Post Advertisement</Button>
+              <Nav.Link href="#features" className='h-auto text-center text-white'>Latest Adds</Nav.Link>
+              <Button variant="outline-warning" href='/postadd'>Post Advertisement</Button>
 
               {/* <NavDropdown title="Dropdown" id="collapsible-nav-dropdown">
                 <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
@@ -64,9 +65,14 @@ function Navigation(){
 
             </Nav>
             <Nav>
+              <Nav.Link href='/cart'>
+              <BsCart4 style={{color:'white'}} href='./cart' className='me-4 w-100' size={28} />
+              </Nav.Link>
+            </Nav>
+            <Nav>
               <div className='d-flex justify-content-center mt-md-0 mt-3 align-items-center'>
-            <Image src="./src/components/avt.png" roundedCircle style={{height:30, width:30}} className='' />
-              {(user?.firstName===undefined)?<Nav.Link href="./login">Login</Nav.Link>:<Nav.Link>{user.firstName+" "+user.lastName}</Nav.Link>}
+            <Image src="./src/components/avt.png" roundedCircle style={{height:30, width:30}} className='text-white' />
+              {(user?.firstName===undefined)?<Nav.Link className='text-white' href="/login">Login</Nav.Link>:<Nav.Link className='text-white'>{user.firstName+" "+user.lastName}</Nav.Link>}
               </div>
             </Nav>
           </Navbar.Collapse>

@@ -11,7 +11,7 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Spinner from 'react-bootstrap/Spinner';
 
-export default function CheckoutForm() {
+export default function CheckoutForm(props:any) {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -96,7 +96,7 @@ export default function CheckoutForm() {
       <PaymentElement id="payment-element" options={paymentElementOptions} />
       <button disabled={isLoading || !stripe || !elements} id="submit" className="btn btn-primary mt-2 w-100">
         <span id="button-text">
-          {isLoading ? <Spinner animation="border" /> : "Pay now"}
+          {isLoading ? <Spinner animation="border" /> : "Pay  LKR "+props.total.toString()}
         </span>
       </button>
       {/* Show any error or success messages */}

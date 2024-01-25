@@ -1,4 +1,4 @@
-import { useEffect /* , useState*/ } from 'react'
+import { useEffect , useState } from 'react'
 // import reactLogo from '../assets/react.svg'
 // import viteLogo from '/vite.svg'
 import Navigation from '../components/navigation.tsx';
@@ -15,7 +15,7 @@ import Col from 'react-bootstrap/Col';
 function Home() {
   // const [user, setUser] = useState({name:undefined});
 
-  // const [show, setShow] = useState(false);
+  const [searchQry, setSearchqry] = useState('');
 
   // const handleClose = () => setShow(false);
   // const handleShow = () => setShow(true);
@@ -54,8 +54,8 @@ function Home() {
 
     <Container className='mt-5'>
     <Container className='d-flex justify-content-center' >
-      <Form.Control  placeholder="type what you looking for..." style={{width:600}}/>
-      <Button variant="secondary" className='ms-3'>Search</Button>
+      <Form.Control onChange={(e)=>{setSearchqry(e.target.value)}}  placeholder="type what you looking for..." style={{width:600}}/>
+      <Button variant="secondary" className='ms-3'   href={'/search/'+searchQry}>Search</Button>
     </Container>
     </Container>
     <Container className='mt-5'>
