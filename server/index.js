@@ -113,7 +113,7 @@ app.post('/signup', async function(req, res){
         to: user.email, // list of receivers
         subject: "e-commerce", // Subject line
         text: "confirm your account", // plain text body
-        html: `<a href='${process.env.HOST}/activate/${token}'><button>confirm</button></a>`, // html body
+        html: `<p>please click the button below to confirm your account</p><a href='${process.env.HOST}/activate/${token}'><button>confirm</button></a>`, // html body
       });
 
       setTimeout(()=>{
@@ -148,12 +148,12 @@ app.get("/activate/:key", async function(req, res){
           res.redirect(`${process.env.CORS_URL}/login`);
         }
         else{
-          res.send(`error activating your account <a href="${process.env.CORS_URL}/signup">signup</a>`);
+          res.send(`error activating your account <a href="${process.env.CORS_URL}/signin">signup</a>`);
         }
       
       }
       else{
-        res.send(`timeout <a href="${process.env.CORS_URL}/signup">signup</a>`);
+        res.send(`timeout <a href="${process.env.CORS_URL}/signin">signup</a>`);
       }
 
     }
