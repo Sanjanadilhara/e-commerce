@@ -88,7 +88,7 @@ class UserController{
             return retUser;
         }
         else{
-            return undefined
+            return undefined;
         }
     }
     async updateUser(user){

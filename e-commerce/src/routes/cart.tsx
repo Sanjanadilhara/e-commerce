@@ -91,9 +91,9 @@ export default function Cart(){
                 <CardBody>
                 <h5>total: Rs. {cartData===null||cartData?.total===undefined?"0":cartData.total}</h5>
                 <Row className="my-3">
-                    <div className="w-auto"><FaCcVisa/></div>
-                    <div className="w-auto"><FaCcMastercard/></div>
-                    <div className="w-auto"><FaCcAmex/></div>
+                    <div className="w-auto"><FaCcVisa size={30}/></div>
+                    <div className="w-auto"><FaCcMastercard size={30}/></div>
+                    <div className="w-auto"><FaCcAmex size={30}/></div>
                 </Row>
                 {
                 cartData?.total===undefined?

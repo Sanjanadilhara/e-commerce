@@ -16,12 +16,25 @@ const Post = require('./models/post.js');
 const CartItem=require('./models/cartItem.js');
 const CartItemController=require('./controllers/CartItemController.js')
 const stripe = require("stripe")('sk_test_51OJLnxDB5ydFCTRnsen4HUdRgZURdCZcptz3ura6BFk1gDZx6mhBlwBbyH56jyuKxGf1Nuk1z5Y7Ae8pW3z4SO7p00qPbEH6ME');
+const nodemailer = require("nodemailer");
+require('dotenv').config();
 
 
+
+const temRegUsers=new Map();
+
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    // TODO: replace `user` and `pass` values from <https://forwardemail.net>
+    user: "forwpurpose@gmail.com",
+    pass: "kfnnxfqnpkwtzryk",
+  },
+});
 
 const upload = multer({ dest: 'uploads/' })
-
-
 
 const app = express();
 const server = http.createServer(app);
@@ -33,11 +46,11 @@ app.use(cookieParser());
 //   credentials: true,
 // }));
 app.use(cors({
-  origin: 'http://localhost:5173', 
+  origin: process.env.CORS_URL, 
   credentials: true,
 }));
 app.use(function(req, res, next){
-  jwt.verify(req?.cookies?.auth, 'instmsg098', function(err, decoded) {
+  jwt.verify(req?.cookies?.auth, process.env.JWT_KEY, function(err, decoded) {
     if(!err){
       req.isAuthorized=true;
       req.userID=decoded.id;
@@ -50,7 +63,7 @@ app.use(function(req, res, next){
   });
 });
 
-const url = 'mongodb://localhost:27017';
+const url = process.env.DB_URL;
 const client = new MongoClient(url);
 let db=undefined;
 
@@ -83,16 +96,71 @@ app.get('/', async function (req, res) {
 
 
 app.post('/signup', async function(req, res){
+
+
   let user=new User(req.body);
   let userController=new UserController(db);
+
+  
   if(user.logs.peek().success){
-    await user.hashPassword();
-    await userController.addUser(user);
-    res.json(userController.logs.pop());
+    if(await userController.findUserByEmail(user.email)===undefined){
+      await user.hashPassword();
+      temRegUsers.set(user.email, user);
+
+      let token = jwt.sign({ email:user.email}, process.env.JWT_KEY);
+      const info = await transporter.sendMail({
+        from: 'e-commerce', // sender address
+        to: user.email, // list of receivers
+        subject: "e-commerce", // Subject line
+        text: "confirm your account", // plain text body
+        html: `<a href='${process.env.HOST}/activate/${token}'><button>confirm</button></a>`, // html body
+      });
+
+      setTimeout(()=>{
+        console.log("deleting "+user.email);
+        if(temRegUsers.has(user.email)){
+          temRegUsers.delete(user.email);
+        }
+      }, 60000);
+      res.json({success:true, status:"check emails"});
+
+    }
+    else{
+      res.json({success:false, status:"email already exist"});
+    }
+    // await userController.addUser(user);
   }
   else{
     res.json(user.logs.pop());
   }
+});
+app.get("/activate/:key", async function(req, res){
+  jwt.verify(req.params.key, process.env.JWT_KEY, async function(err, decoded) {
+    if(!err){
+      if(temRegUsers.has(decoded.email)){
+        let user=temRegUsers.get(decoded.email);
+        let userController=new UserController(db);
+
+        await userController.addUser(user);
+
+        if(userController.logs.pop().success){
+          temRegUsers.delete(user.email);
+          res.redirect(`${process.env.CORS_URL}/login`);
+        }
+        else{
+          res.send(`error activating your account <a href="${process.env.CORS_URL}/signup">signup</a>`);
+        }
+      
+      }
+      else{
+        res.send(`timeout <a href="${process.env.CORS_URL}/signup">signup</a>`);
+      }
+
+    }
+    else{
+      res.send("error while activating your accout");
+    }
+  });
 });
 
 app.post('/login', async function(req, res){
@@ -101,8 +169,8 @@ app.post('/login', async function(req, res){
   let user= await userController.findUserByEmail(req.body?.email);
   if(user!=undefined){
     await user.comparePassword(req.body?.password);
-    if(user.logs.peek().success){
-      let token = jwt.sign({ id:user._id}, 'instmsg098');
+    if(user.logs.peek().success ){
+      let token = jwt.sign({ id:user._id}, process.env.JWT_KEY);
       res.cookie("auth", token);
       res.json(user.logs.pop());
     }
@@ -179,7 +247,7 @@ app.get('/images/:filename',upload.array('images', 12), function(req, res){
 
   if(req.isAuthorized){
     try{
-      res.sendFile("C:/Users/sanja/OneDrive/Desktop/pros/ecommerce/server/uploads/"+req.params.filename);
+      res.sendFile(process.env.UPLOAD_DIRECTORY+req.params.filename);
     }catch(e){
       res.json({success:false, status:e.toString()})
     }
