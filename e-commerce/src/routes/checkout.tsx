@@ -5,7 +5,7 @@ import ComData from '../components/common.tsx';
 import Container from 'react-bootstrap/Container';
 
 import CheckoutForm from "../components/checkoutform.tsx";
-import "../Pay.css";
+import "../pay.css";
 import Navigation from "../components/navigation.tsx";
 
 
