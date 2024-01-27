@@ -108,7 +108,7 @@ function ViewPost(){
                         defaultValue="1"
                         onChange={(e)=>setQty(parseInt(e.target.value))}
                     />
-                    <Button className='w-auto ms-1' variant="outline-warning" onClick={(e)=>addToCart()}>Add to Cart<TbShoppingCartPlus className='ms-3'/></Button>
+                    <Button className='w-auto ms-1' variant="outline-warning" onClick={()=>addToCart()}>Add to Cart<TbShoppingCartPlus className='ms-3'/></Button>
                 </Row>
 
                 <p dangerouslySetInnerHTML={{__html:post.description}}></p>

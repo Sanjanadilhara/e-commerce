@@ -4,13 +4,11 @@ import { Row,
         Image,
         Card,
         CardBody,
-        CardTitle,
-        CardFooter, 
         Button} from "react-bootstrap";
 import Navigation from "../components/navigation";
 import { useEffect, useState } from 'react'
 import ComData from "../components/common";
-import { json } from "react-router-dom";
+// import { json } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
 import Spinner from 'react-bootstrap/Spinner';
 import { FaCcVisa, FaCcMastercard, FaCcAmex} from "react-icons/fa6";
@@ -35,7 +33,7 @@ export default function Cart(){
         .then((data)=>data.json())
         .then((data)=>{
             setCartData(data);
-        }).catch((e)=>{});
+        }).catch(()=>{});
     }
 
     function deleteItem(id:string){
@@ -50,7 +48,7 @@ export default function Cart(){
         .then((data)=>data.json())
         .then((data)=>{
             setCartData(data);
-        }).catch((e)=>{});
+        }).catch(()=>{});
         setLoadData(!loadData);
 
     }
@@ -75,7 +73,7 @@ export default function Cart(){
                     <Col className="p-2 d-flex justify-content-center col-3 overflow-hidden"><Image height={75} src={ComData.ADDR+'/images/'+element.postImage}/></Col>
                     <Col className="p-2 col-4"><p className="clamp-text">{element.postTitle}</p></Col>
                     <Col className="p-2 col-2">{element.quantity}</Col>
-                    <Col className="p-2 col-3 position-relative">{"Rs. "+element.price}<RxCross2 onClick={(e)=>deleteItem(element._id)} style={{backgroundColor:'white',padding:1, color:"red", position:"absolute", right:5, top:'40%'}}/></Col>
+                    <Col className="p-2 col-3 position-relative">{"Rs. "+element.price}<RxCross2 onClick={()=>deleteItem(element._id)} style={{backgroundColor:'white',padding:1, color:"red", position:"absolute", right:5, top:'40%'}}/></Col>
                     </Row>
                 ))
             }

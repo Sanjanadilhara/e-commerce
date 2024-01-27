@@ -12,7 +12,7 @@ import Col from 'react-bootstrap/Col';
 // import Stack from 'react-bootstrap/Stack';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Card from 'react-bootstrap/Card';
-import InputGroup from 'react-bootstrap/InputGroup';
+// import InputGroup from 'react-bootstrap/InputGroup';
 // import Modal from 'react-bootstrap/Modal';
 import Image from 'react-bootstrap/Image';
 import toast, { Toaster } from 'react-hot-toast';
@@ -29,7 +29,7 @@ function PostAdd() {
     const [temImg, setTemImg]:[any, any]=useState({});
     const [imageArray, setImageArray]:[any, any]=useState([]);
     const [postAddSuccess, setPostAddSuccess]=useState(false);
-    const [convertedText, setConvertedText] = useState("Some default content");
+    // const [convertedText, setConvertedText] = useState("Some default content");
 
 
     useEffect(()=>{console.log(postData)},[postData]);

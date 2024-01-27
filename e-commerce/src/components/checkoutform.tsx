@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   PaymentElement,
   useStripe,
   useElements
 } from "@stripe/react-stripe-js";
-import ComData from '../components/common.tsx';
-import Container from 'react-bootstrap/Container';
-import Button from 'react-bootstrap/Button';
+// import Container from 'react-bootstrap/Container';
+// import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Spinner from 'react-bootstrap/Spinner';
+import ComData from "./common";
 
 export default function CheckoutForm(props:any) {
   const stripe = useStripe();
@@ -31,7 +31,7 @@ export default function CheckoutForm(props:any) {
       return;
     }
 
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }:any) => {
       switch (paymentIntent.status) {
         case "succeeded":
           setMessage("Payment succeeded!");
@@ -49,7 +49,7 @@ export default function CheckoutForm(props:any) {
     });
   }, [stripe]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
 
     if (!stripe || !elements) {
@@ -60,7 +60,7 @@ export default function CheckoutForm(props:any) {
 
     setIsLoading(true);
 
-    const { error } = await stripe.confirmPayment({
+    const { error}:any = await stripe.confirmPayment({
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
